@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reclaim Custom Provider</title>
+</head>
+<body>
+  <h1>Reclaim Custom Provider</h1>
+  <button onclick="startReclaim()">Prove Account</button>
+
+  <pre id="output"></pre>
+
+  <script>
+    async function startReclaim() {
+      const reclaim = new Reclaim.Reclaim();
+
+      const appId = "YOUR_APP_ID_HERE"; // From step 4
+
+      const templates = [
+        {
+          provider: "my-custom-provider",
+          payload: {
+            reason: "Prove you're a Premium user",
+          },
+        }
+      ];
+
+      const { reclaimUrl, statusUrl } = await reclaim.generateRequest({
+        appId,
+        context: "demo-user",
+        requestedProofs: templates,
+      });
+
+      window.open(reclaimUrl, '_blank');
+
+      const proof = await reclaim.waitForProof({ statusUrl });
+
+      document.getElementById("output").textContent = JSON.stringify(proof, null, 2);
+    }
+  </script>
+</body>
+</html>
